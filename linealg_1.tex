@@ -1,0 +1,222 @@
+\documentclass[12pt,letterpaper,final]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{mathtools}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+\author{J Kiparsky}
+\title{Notes on Linear Algebra: Fundamentals}
+\begin{document}
+\section{Fields}
+\paragraph{Definition: Field} A field is a set of two or more numbers which is closed over the arithmetic operators, and for which the following conditions hold:
+\begin{itemize}
+\item addition and multiplication are commutative: $x+y = y+x$
+\item addition and multiplication are associative: $(x+y) +z = x+(y+z)$
+\item addition and multiplication each have identity elements: \\$x +0=x$ $x \cdot 1 = x$
+\item every element x has an additive inverse : $x + -x = 0$
+\item every element x has a multiplicative inverse, except for 0: $x \cdot 1/x = 1$
+\item multiplication distributes over addition: $x \cdot (y+z) = xy + xz)$
+\end{itemize}
+
+\paragraph{Discussion}There are four fields which we can expect to encounter in our work on linear algebra. They are:
+\begin{itemize}
+\item The rational numbers $\mathbb{Q}$
+\item The real numbers $\mathbb{R}$
+\item The complex numbers $\mathbb{C}$
+\item The integers mod p:$\mathbb{F}_{p}$ (where p is some prime, generally 2)
+\end{itemize}
+
+We will often speak of matrices and vectors as being defined "over some field F". This is simply a conventional way to emphasize that we don't really care what field we're operating on: the simple fact that this matrix contains elements drawn from some field, and all from the same field, is sufficient for our purposes. 
+
+\section{Linear Equations}
+Linear algebra is largely concerned with manipulating and solving systems of linear equations. Therefore, we will introduce some key notions here, although we will not actually begin to address the mathematics of these equations here. 
+
+\paragraph{Definition: Linear equation} A linear equation is an equation of the form \\
+$a_1x_1 + a_2x_2 + \cdots + a_nx_n = b$
+ 
+\paragraph{Definition: System of linear equations} A system of linear equations is a set of linear equations of the form \\
+$a_{11}x_1 + a_{12}x_2 + \cdots + a_{1n}x_n = b_1$\\
+$a_{21}x_1 + a_{22}x_2 + \cdots + a_{1n}x_n = b_1$\\
+\begin{tabular}{@{\hspace{8ex}}p{42em}}
+$\cdots$\\
+\end{tabular}
+$a_{m1}x_1 + a_{m2}x_2 + \cdots + a_{mn}x_n = b_m$\\
+
+\paragraph{Discussion} The terms $a_i$ are coefficients of a particular equation. The terms $x_i$ are the unknowns of the system, and are common to all of the equations in the system. These are exactly similar to the familiar $x$, $y$, and $z$ of high school algebra, but here we are gathering them into one collective identity, since we are interested in more general solutions to arbitrarily large systems. 
+
+
+Notice the double subscript $a_{12}$. This is to be read as "a, sub one, two", and not as "a, sub twelve".  That is, we are picking out the second coefficient in the first equation in this system. Since we will generally not be working manually on large matrices with hundreds of elements (this is what Octave is for!), our indices will be single digits or simply variable names (i and j), and this convention will not be ambiguous. Commas can be used to separate the indices if they are needed: $a_{1,2}$. Some authors (Robert Stoll and Andrew Ng, in particular) use a combination of superscript and subscript for matrix indices. It will generally not be hard to determine the intent of a particular author's indexing system. 
+
+\paragraph{Definition: solution} A solution to a system of linear equations is some set of numbers $b$ such that $b_i$ satisfies the equation \\
+$a_{i1}x_1 + a_{i2}x_2 + \cdots + a_{in}x_n = b_i$\\
+for each equation $i$ in the system. 
+
+\subsection{Some More Useful Concepts}
+The following definitions are not immediately needed, but will come into play at some stage, so I'm including them here. 
+\paragraph{Definition} Homogeneous Linear Equation
+An equation of the form \\
+$a_1x_1 + a_2x_2 + \cdots + a_nx_n = 0$\\
+is called a homogeneous linear equation. 
+
+
+\section{Matrices}
+Examining the representation of a system of linear equations, we can see that it is possible to simplify things.
+
+Rather than 
+$a_{11}x_1 + a_{12}x_2 + a_{13}x_3  + a_{1n}x_3 = b_1$\\
+$a_{21}x_1 + a_{22}x_2 + a_{23}x_3  + a_{2n}x_n = b_2$\\
+$a_{31}x_1 + a_{32}x_2 + a_{33}x_3  + a_{3n}x_n = b_3$\\
+$a_{41}x_1 + a_{42}x_2 + a_{43}x_3  + a_{4n}x_n = b_4$\\
+$a_{51}x_1 + a_{52}x_2 + a_{53}x_3  + a_{5n}x_n = b_5$\\
+$a_{61}x_1 + a_{62}x_2 + a_{63}x_3  + a_{6n}x_n = b_6$\\
+
+We would like to consider the coefficients, the unknowns, and the solutions separately from each other. Here we represent the cofeficients as a matrix:
+
+$
+ \begin{pmatrix}
+a_{11} &  a_{12} &  a_{13} &   a_{1n} \\
+a_{21}  & a_{22} &  a_{23} &   a_{2n}\\
+a_{31} & a_{32} &   a_{33} &   a_{3n}\\   
+a_{41}& a_{42} &  a_{43} &   a_{4n}\\
+a_{51} &a_{52} &   a_{53} &   a_{5n}\\
+a_{61} &a_{62} &   a_{63} &   a_{6n}\\
+ \end{pmatrix}
+$
+
+Often, we will simply suggest the structure of a matrix and elide the actual enumeration of elements:
+
+$
+ \begin{pmatrix}
+  a_{11} & a_{12} & \cdots & a_{1n} \\
+  a_{21} & a_{22} & \cdots & a_{2n} \\
+  \vdots  & \vdots  & \ddots & \vdots  \\
+  a_{m1} & a_{m2} & \cdots & a_{mn}
+ \end{pmatrix}
+$
+
+
+As a formal definition, we will adapt this one from Mirsky:
+
+An $m \times n$ matrix over some field F is a rectangular array of elements, all of which are in F, arranged in $m$ rows of $n$ columns. 
+
+Notice that this definition says nothing about relations among the elements, or between any elements of the array and any other entity in our systems. In fact, nothing about our definition requires any such relations, and none of our operations depend on the existence of such relations. 
+
+\subsection{Special Matrices}
+There are some special matrix forms which are worth knowing about. 
+\paragraph{Square matrix} An $m \times m$ matrix is called a square matrix. If A is a square matrix, its elements$a_{11}$, $a_{22}$, $a_{ii}$ are called its diagonal elements, and the complete set $a_{11}$ ... $a_{mm}$ constitute its diagonal. (For Mirsky, at least, the perpendicular set of elements is not also a diagonal of this matrix). 
+
+\paragraph{Identity Matrix} The $m \times m$ square matrix whose  diagonal elements are all equal to 1, and whose other elements are all equal to 0, is called the identy matrix. Also referred to as the unit matrix. 
+
+\paragraph{Zero Matrix} The $m \times n$ matrix whose elements are all zero is referred to as the $m \times n$ zero matrix. It is denoted as $0_{mn}$ or simply as 0 if no ambiguity results. 
+
+\paragraph{Diagonal Matrix} A square matrix whose elements outside the diagonal are all equal to zero is referred to as a diagonal matrix. A diagonal matrix whose non-zero elements are all equal to each other is called a scalar matrix. 
+
+\paragraph{Triangular Matrix} A square matrix whose elements above the diagonal are all zero is called an upper triangular matrix. A square matrix whose elements below the diagonal are all zero is referred to as a lower triangular matrix. A matrix which is either upper or lower triangular can be called a triangular matrix. 
+
+ 
+\subsection{Matrix Operations}
+Following is a summary of the operations on matrices, without proofs or detailed discussion. 
+
+The operations on matrices are analogous to those on numbers in many cases. However, this can be confusing since intuitions about the behaviour of matrix operations may be incorrent if they are based on analogy. 
+
+\subsubsection{Scalar-Vector Multiplication}
+Given scalar $\alpha$ $\in$ field F and $m \times n$ matrix A over F, the product $\alpha A$ is defined as 
+$
+ \begin{pmatrix}
+\alpha a_{11} &\alpha  a_{12} &  \cdots & \alpha   a_{1n} \\
+\alpha a_{21} &\alpha  a_{22} &  \cdots & \alpha  a_{2n}\\
+\alpha a_{31} &\alpha  a_{32} &  \cdots & \alpha   a_{3n}\\
+  \vdots  & \vdots  & \ddots & \vdots  \\
+\alpha a_{m1} &\alpha  a_{m2} &  \cdots & \alpha  a_{mn}\\
+ \end{pmatrix}
+$
+
+That is, each element of A is multiplied by $\alpha$
+
+Scalar-matrix multiplication is commutative: $\alpha A = A \alpha$. However, scalar-matrix multiplication is not necessarily associative. The reason for this will become clear when we introduce matrix-matrix multiplication. 
+\subsubsection{Matrix Addition}
+
+Given $m \times n$ matrices A and B over F, the product $AB$ is defined as 
+
+$
+ \begin{pmatrix}
+a_{11}+b_{11} &  a_{12}+b_{12} &  \cdots &   a_{1n}+b_{1n} \\
+ a_{21}+b_{21} &  a_{22}+b_{22} &  \cdots &   a_{2n}+b_{2n}\\
+ a_{31}+b_{31} &  a_{32}+b_{32} &  \cdots &    a_{3n}+nb_{3n}\\
+  \vdots  & \vdots  & \ddots & \vdots  \\
+ a_{m1}+b_{m1} &  a_{m2}+a_{m2} &  \cdots &   a_{mn}+b_{mn}\\
+ \end{pmatrix}
+$
+
+That is, each element of the resulting  matrix A+B is the sum of the corresponding elements in A and B. 
+
+Matrix addition is commutative and associative. Scalar-matrix multipication distributes over matrix addition: $\alpha (A+B) = \alpha A + \alpha B$. Scalar-matrix multiplication also distributes over scalar addition: $(\alpha + \beta) A = \alpha A + \beta A$
+
+Notice that subtraction of matrices is trivial and requires no new definitions. For any $m \times n$ matrices $A$ and $B$, there is a matrix $X$ such that $A + X = B$. This matrix $X$ is called the difference of $A$ and $B$ and is written $X = B - A$. Since all matrices are defined over fields, we can use scalar-matrix multiplication to find this difference. 
+
+\subsubsection{Matrix Multiplication}
+Multiplication of two matrices is less simple than addition or multiplication of a matrix by a scalar. It is important to state at the outset that matrix multiplication is not the simple pairwise multiplication of elements, as was the case with matrix addition. Instead, each element in the product matrix is the sum of the pairwise products of the elements in the rows of one matrix by the elements in the corresponding columns of the second matrix. 
+Later we will see some procedures which provide the same result, which will be useful both in practical terms - they provide more efficient descriptions of the process - and in terms of understanding the coherence of the concepts of linear algebra. 
+First, the formal definition:
+
+Given a $p \times r$ matrix A and an $r \times s$ matrix B, the product C is a $p \times s$ matrix such that each element $c_{ij} \sum_{k=1}^{r} a_{ik}b{kj}$
+
+That is, the element $c_{ij}$ is the sum of the pairwise products of the elements of the $i$th row of A by the $j$th column of B. Specifically, 
+$c_{11} = a_{11} \times b_{11} + a_{12} \times b_{21} + \cdots a_{1r} \times b_{r1} $
+
+Notice that as a consequence of this definition, matrix multiplication is only defined for matrices A, B where the number of columns of A is equal to the number of rows in B. Another consequence of this definition is that matrix multiplication is not commutative, as you can see by defining two square matrices A and B, and evaluating the products AB and BA. 
+
+\subsubsection{Matrix Multiplication Example}
+Let $A =
+ \begin{pmatrix}
+2 & 1 \\-1 & 3 \\1 & 0\\5 & 2\\
+ \end{pmatrix}
+$
+and $B = 
+ \begin{pmatrix}
+ 1 & 1 & -2\\ 3 & -4 & 3\\
+ \end{pmatrix}
+$
+
+We notice that A is a $4 \times 2$ matrix and B is a $2 \times 3$ matrix. Since A has two columns and B has two rows, the product $C=AB$ is defined, and furthermore it will be a matrix of four rows by three columns. (We could not evaluate the product BA) We can use the inuitive notion that C "gets its rows from A and its columns from B". 
+
+To find the product $C=AB$ we begin with $c_{11}$. This element will be the sum$a_{11} \times b_11 + a_{12} \times b_{21}$, or $2 \times 1 + 1 \times 3$, which is 5. We need not proceed in any particular order, as each element of C is calculated indepently, so we can arbitrarily choose to calculate $c_{2,3}$. This will be the sum of the products $a_{2,1} \times b_{1,3} + a_{2,2} \times b_{2,3}$. Plugging in values, we find the result is $-1 \times -2 + 3 \times 3$, or $11$.
+
+The final product is $C = 
+ \begin{pmatrix}
+ 5 & -2 & -1\\ 8 & -13 & 11\\ 1 & 1 & -2 \\ 11 & -3 & -4\\ 
+ \end{pmatrix}
+$
+
+
+\subsubsection{Transposition}
+A matrix A is transposed by exchanging its rows and columns. The result of this process is denoted $A^T$
+Given matrix A = 
+$
+ \begin{pmatrix}
+  a_{11} & a_{12} & \cdots & a_{1n} \\
+  a_{21} & a_{22} & \cdots & a_{2n} \\
+  \vdots  & \vdots  & \ddots & \vdots  \\
+  a_{m1} & a_{m2} & \cdots & a_{mn}
+ \end{pmatrix}
+$, the transposition 
+
+$A^T$ =
+$
+ \begin{pmatrix}
+  a_{11} & a_{21} & \cdots & a_{n1} \\
+  a_{12} & a_{22} & \cdots & a_{n2} \\
+  \vdots  & \vdots  & \ddots & \vdots  \\
+  a_{1m} & a_{2m} & \cdots & a_{nm}
+ \end{pmatrix}
+$.
+\subsubsection{Matrix Equality}
+$p \times q$ matrix $A$ is equal to $r \times s$ matrix B iff 
+\begin{itemize}
+\item $p = r \& q = s$ AND
+\item $a_{ij} = B_{ij}$ for all pairs (i,j)
+\end{itemize}
+
+\section{Vectors}
+To do. 
+\end{document}
