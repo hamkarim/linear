@@ -3,12 +3,43 @@
 \usepackage{mathtools}
 \usepackage{amsfonts}
 \usepackage{amssymb}
-
-\author{J Kiparsky}
-\title{Notes on Linear Algebra: Fundamentals}
 \begin{document}
+\title{Notes on Linear Algebra: Fundamentals\\Matrices, Vectors, and Linear Equations}
+\author{J Kiparsky}
+
+
+
+\section{Notation and terminology}
+\subsection{Notation}
+In general I will try to follow the most commonly-used notation conventions. Where possible, I will make note of variant conventions, in order to avoid confusion. 
+\begin{itemize}
+\item Throughout this document,  I will use capital U, V, W to refer to generic vectors, ie for examples, definitions, and proofs. A, B, C (..) will refer to generic matrices. 
+\item The elements of vector V of length n will be identified as $v_1, v_2...v_n$. 
+\item Elements of a matrix A will be identified by the double-subscript notation $a_{11}, a_{12}...a_{mn}$
+\item Row vectors and column vectors of a matrix A will be identified in general with the single-subscript notation $A_i$ or $A_j$, respectively, or particuarly with the actual index. When actual subscripts are used, it will be quite clear from the context whether we are dealing with a row or a column. 
+\item $i,j,k$ will generally be used as counters in summations and as indices generally. 
+\item $m,n$ will be the row and column dimensions, respectively, of a matrix. 
+\end{itemize}
+
+\subsection{Terminology}
+Most terms are formally defined when they are introduced. A few terms are mentioned here, as they are logically prior to our study of linear algebra. 
+
+
+\paragraph{scalar} A \textbf{scalar} is simply a quantity, ie, a number, often specified as "over some field". (see previous note) The term "scalar" is used to emphasize that the role of this quantity is to modify (or "scale") the elements of some matrix or vector. 
+
+\paragraph{arithmetic operations} The \textbf{arithmetic operations} are addition, subtraction, multiplication, and division. 
+
+\paragraph{commutative} An operation is \textbf{commutative} if the order of its operands may in all cases be switched without changing the result. Of the arithmetic operations, addition and multiplication are commutative and division and subtraction are not. 
+
+\paragraph{associative} An operation is \textbf{associative} if executions of that operation may be grouped arbitrarily without affecting the final result of the computation. Effectively, it is the claim that an operation may be seen as working "across" a list. For example, we can sensibly ask for the sum of a list of integers: sum(1,2,3,4,5) = 15. On the other hand, we cannot ask for the difference of that list and expect any meaningful result. Again, addition and multiplication are associative and subtraction and division are not. 
+
+\paragraph{istribution} An operation O distributes over some other operation P if O(P(a,b)) = P(O(a), O(b)). 
+
+\paragraph{closure} A set is "closed over" or "closed under" some operation (both prepositions are used) if that operation, performed on two members of that set, always produces a member of that set. The integers are closed over addition, but not over division.  In time scales shorter than the evolutionary ones, species are sets closed under reproduction. 
+
 \section{Fields}
-\paragraph{Definition: Field} A field is a set of two or more numbers which is closed over the arithmetic operators, and for which the following conditions hold:
+The subject of linear algebra consists of operations on groups of numbers. We would like to ensure that we are consistently operating on compatible "sorts" of numbers. The notion of the "field" is useful to this end. 
+\paragraph{Definition: Field} A \textbf{field} is a set of two or more numbers which is closed over the arithmetic operators, and for which the following conditions hold:
 \begin{itemize}
 \item addition and multiplication are commutative: $x+y = y+x$
 \item addition and multiplication are associative: $(x+y) +z = x+(y+z)$
@@ -28,13 +59,13 @@
 
 We will often speak of matrices and vectors as being defined "over some field F". This is simply a conventional way to emphasize that we don't really care what field we're operating on: the simple fact that this matrix contains elements drawn from some field, and all from the same field, is sufficient for our purposes. 
 
-\section{Linear Equations}
-Linear algebra is largely concerned with manipulating and solving systems of linear equations. Therefore, we will introduce some key notions here, although we will not actually begin to address the mathematics of these equations here. 
+\section{Matrices}
+Linear algebra is largely concerned with manipulating and solving systems of linear equations.  Therefore, we will begin by stating what we mean by this, although we will not actually begin to address the mathematics of these equations yet. 
 
-\paragraph{Definition: Linear equation} A linear equation is an equation of the form \\
+\paragraph{Definition: Linear equation} A \textbf{linear equation} is an equation of the form \\
 $a_1x_1 + a_2x_2 + \cdots + a_nx_n = b$
  
-\paragraph{Definition: System of linear equations} A system of linear equations is a set of linear equations of the form \\
+\paragraph{Definition: System of linear equations} A \textbf{system of linear equations} is a set of linear equations of the form \\
 $a_{11}x_1 + a_{12}x_2 + \cdots + a_{1n}x_n = b_1$\\
 $a_{21}x_1 + a_{22}x_2 + \cdots + a_{1n}x_n = b_1$\\
 \begin{tabular}{@{\hspace{8ex}}p{42em}}
@@ -42,24 +73,19 @@ $\cdots$\\
 \end{tabular}
 $a_{m1}x_1 + a_{m2}x_2 + \cdots + a_{mn}x_n = b_m$\\
 
-\paragraph{Discussion} The terms $a_i$ are coefficients of a particular equation. The terms $x_i$ are the unknowns of the system, and are common to all of the equations in the system. These are exactly similar to the familiar $x$, $y$, and $z$ of high school algebra, but here we are gathering them into one collective identity, since we are interested in more general solutions to arbitrarily large systems. 
+\paragraph{Discussion} The terms $a_i$ are coefficients of a particular equation. The terms $x_i$ are the unknowns of the system, and are common to all of the equations in the system. These are exactly similar to the familiar $x$, $y$, and $z$ of high school algebra, but here we are gathering them into one collective identity, since we are interested in more general solutions to arbitrarily large systems. We notice particularly that all terms $x\_i$ are in the first degree. That is, we do not see an equation of this sort:
 
 
-Notice the double subscript $a_{12}$. This is to be read as "a, sub one, two", and not as "a, sub twelve".  That is, we are picking out the second coefficient in the first equation in this system. Since we will generally not be working manually on large matrices with hundreds of elements (this is what Octave is for!), our indices will be single digits or simply variable names (i and j), and this convention will not be ambiguous. Commas can be used to separate the indices if they are needed: $a_{1,2}$. Some authors (Robert Stoll and Andrew Ng, in particular) use a combination of superscript and subscript for matrix indices. It will generally not be hard to determine the intent of a particular author's indexing system. 
+$a_1x_1^2 + a_2x_1 + a_3x_2^3 + a_3x_2 \cdots + a_nx_n = b$
 
-\paragraph{Definition: solution} A solution to a system of linear equations is some set of numbers $b$ such that $b_i$ satisfies the equation \\
+That is, all terms are \textit{linear}, and not for example quadratic or higher degree. Hence "linear equations" and "linear algebra". 
+
+Notice also the double subscript $a_{12}$. This is to be read as "a, sub one, two", and not as "a, sub twelve".  We are picking out the second coefficient in the first equation in this system. Since we will generally not be working manually on large matrices with hundreds of elements (this is what Octave is for!), our indices will be single digits or simply variable names (i and j), and this convention will not be ambiguous. Commas can be used to separate the indices if they are needed: $a_{1,2}$. Some authors (Robert Stoll and Andrew Ng, in particular) use a combination of superscript and subscript for matrix indices. It will generally not be hard to determine the intent of a particular author's indexing system, but it is important to be aware of the different conventions. 
+
+\paragraph{Definition: solution} A \textbf{solution} to a system of linear equations is some set of numbers $b$ such that $b_i$ satisfies the equation \\
 $a_{i1}x_1 + a_{i2}x_2 + \cdots + a_{in}x_n = b_i$\\
 for each equation $i$ in the system. 
 
-\subsection{Some More Useful Concepts}
-The following definitions are not immediately needed, but will come into play at some stage, so I'm including them here. 
-\paragraph{Definition} Homogeneous Linear Equation
-An equation of the form \\
-$a_1x_1 + a_2x_2 + \cdots + a_nx_n = 0$\\
-is called a homogeneous linear equation. 
-
-
-\section{Matrices}
 Examining the representation of a system of linear equations, we can see that it is possible to simplify things.
 
 Rather than 
@@ -70,7 +96,7 @@ $a_{41}x_1 + a_{42}x_2 + a_{43}x_3  + a_{4n}x_n = b_4$\\
 $a_{51}x_1 + a_{52}x_2 + a_{53}x_3  + a_{5n}x_n = b_5$\\
 $a_{61}x_1 + a_{62}x_2 + a_{63}x_3  + a_{6n}x_n = b_6$\\
 
-We would like to consider the coefficients, the unknowns, and the solutions separately from each other. Here we represent the cofeficients as a matrix:
+We would like to consider the coefficients, the unknowns, and the solutions separately from each other. Here we represent the coefficients as a matrix:
 
 $
  \begin{pmatrix}
@@ -95,31 +121,32 @@ $
 $
 
 
-As a formal definition, we will adapt this one from Mirsky:
+As a formal definition (adapted from Mirsky):
 
-An $m \times n$ matrix over some field F is a rectangular array of elements, all of which are in F, arranged in $m$ rows of $n$ columns. 
+\paragraph{Definition: Matrix} An $m \times n$ \textbf{matrix} over some field F is a rectangular array of elements, all of which are in F, arranged in $m$ rows of $n$ columns. 
 
 Notice that this definition says nothing about relations among the elements, or between any elements of the array and any other entity in our systems. In fact, nothing about our definition requires any such relations, and none of our operations depend on the existence of such relations. 
 
+\paragraph{Note:} Some authors particularly, Mirsky) say that an $m \times n$ matrix is "a matrix of type $m \times n$, and to refer to matrices "of the same type", but this is not universally recognized terminology, and I will generally avoid it in these notes. 
+
 \subsection{Special Matrices}
 There are some special matrix forms which are worth knowing about. 
-\paragraph{Square matrix} An $m \times m$ matrix is called a square matrix. If A is a square matrix, its elements$a_{11}$, $a_{22}$, $a_{ii}$ are called its diagonal elements, and the complete set $a_{11}$ ... $a_{mm}$ constitute its diagonal. (For Mirsky, at least, the perpendicular set of elements is not also a diagonal of this matrix). 
+\paragraph{Square matrix} An $m \times m$ matrix is called a \textbf{square matrix}. If A is a square matrix, its elements$a_{11}$, $a_{22}$, $a_{ii}$ are called its diagonal elements, and the complete set $a_{11}$ ... $a_{mm}$ constitute its diagonal. (For Mirsky, at least, the perpendicular set of elements is not also a diagonal of this matrix). Some writers refer to this set of points as the matrix's "major diagonal". 
 
-\paragraph{Identity Matrix} The $m \times m$ square matrix whose  diagonal elements are all equal to 1, and whose other elements are all equal to 0, is called the identy matrix. Also referred to as the unit matrix. 
+\paragraph{Identity Matrix} The $m \times m$ square matrix whose  diagonal elements are all equal to 1, and whose other elements are all equal to 0, is called the \textbf{identity matrix}. Also referred to as the \textbf{unit matrix}. 
 
-\paragraph{Zero Matrix} The $m \times n$ matrix whose elements are all zero is referred to as the $m \times n$ zero matrix. It is denoted as $0_{mn}$ or simply as 0 if no ambiguity results. 
+\paragraph{Zero Matrix} The $m \times n$ matrix whose elements are all zero is referred to as the $m \times n$ \textbf{zero matrix}. It is denoted as $0_{mn}$ or simply as 0 if no ambiguity results. 
 
-\paragraph{Diagonal Matrix} A square matrix whose elements outside the diagonal are all equal to zero is referred to as a diagonal matrix. A diagonal matrix whose non-zero elements are all equal to each other is called a scalar matrix. 
+\paragraph{Diagonal Matrix} A square matrix whose elements outside the major diagonal are all equal to zero is referred to as a diagonal matrix. A diagonal matrix whose non-zero elements are all equal to each other is called a scalar matrix. 
 
-\paragraph{Triangular Matrix} A square matrix whose elements above the diagonal are all zero is called an upper triangular matrix. A square matrix whose elements below the diagonal are all zero is referred to as a lower triangular matrix. A matrix which is either upper or lower triangular can be called a triangular matrix. 
+\paragraph{Triangular Matrix} A square matrix whose elements above the diagonal are all zero is called an \textbf{upper triangular matrix}. A square matrix whose elements below the diagonal are all zero is referred to as a \textbf{lower triangular matrix}. A matrix which is either upper or lower triangular can be called a \textbf{triangular matrix}. 
 
- 
 \subsection{Matrix Operations}
 Following is a summary of the operations on matrices, without proofs or detailed discussion. 
 
 The operations on matrices are analogous to those on numbers in many cases. However, this can be confusing since intuitions about the behaviour of matrix operations may be incorrent if they are based on analogy. 
 
-\subsubsection{Scalar-Vector Multiplication}
+\subsubsection{Scalar-Matrix Multiplication}
 Given scalar $\alpha$ $\in$ field F and $m \times n$ matrix A over F, the product $\alpha A$ is defined as 
 $
  \begin{pmatrix}
@@ -131,12 +158,12 @@ $
  \end{pmatrix}
 $
 
-That is, each element of A is multiplied by $\alpha$
+That is, each element of A is multiplied by $\alpha$. 
 
-Scalar-matrix multiplication is commutative: $\alpha A = A \alpha$. However, scalar-matrix multiplication is not necessarily associative. The reason for this will become clear when we introduce matrix-matrix multiplication. 
+Scalar-matrix multiplication is commutative: $\alpha A = A \alpha$. However, scalar-matrix multiplication is not necessarily associative. This is because matrix-matrix multiplication is not associative, as we will see. 
 \subsubsection{Matrix Addition}
 
-Given $m \times n$ matrices A and B over F, the product $AB$ is defined as 
+Given $m \times n$ matrices A and B over F, the sum $A + B$ is defined as 
 
 $
  \begin{pmatrix}
@@ -148,23 +175,25 @@ a_{11}+b_{11} &  a_{12}+b_{12} &  \cdots &   a_{1n}+b_{1n} \\
  \end{pmatrix}
 $
 
-That is, each element of the resulting  matrix A+B is the sum of the corresponding elements in A and B. 
+That is, each element of the resulting  matrix $A+B$ is the sum of the corresponding elements in $A and B$. As the definition indicates, matrix addition is only defined for matrices of the same dimensions over the same field. Adopting the terminology of Schneider \& Barker, we will say that such matrices are \textit{additively conformable} 
 
-Matrix addition is commutative and associative. Scalar-matrix multipication distributes over matrix addition: $\alpha (A+B) = \alpha A + \alpha B$. Scalar-matrix multiplication also distributes over scalar addition: $(\alpha + \beta) A = \alpha A + \beta A$
+\paragraph{Theorem: Matrix addition is commutative and associative} For additively compatible  $A + B = B + A$ and $A+ (B + C) = (A +B)+C$. 
 
-Notice that subtraction of matrices is trivial and requires no new definitions. For any $m \times n$ matrices $A$ and $B$, there is a matrix $X$ such that $A + X = B$. This matrix $X$ is called the difference of $A$ and $B$ and is written $X = B - A$. Since all matrices are defined over fields, we can use scalar-matrix multiplication to find this difference. 
+Scalar-matrix multipication distributes over matrix addition: $\alpha (A+B) = \alpha A + \alpha B$. Scalar-matrix multiplication also distributes over scalar addition: $(\alpha + \beta) A = \alpha A + \beta A$
+
+Notice that subtraction of matrices is trivial and requires no new definitions. For any $m \times n$ matrices $A$ and $B$, there is a matrix $X$ such that $A + X = B$. This matrix $X$ is called the difference of $A$ and $B$ and is written $X = B - A$. Since all matrices are defined over fields, we can  find this difference easily. 
 
 \subsubsection{Matrix Multiplication}
 Multiplication of two matrices is less simple than addition or multiplication of a matrix by a scalar. It is important to state at the outset that matrix multiplication is not the simple pairwise multiplication of elements, as was the case with matrix addition. Instead, each element in the product matrix is the sum of the pairwise products of the elements in the rows of one matrix by the elements in the corresponding columns of the second matrix. 
 Later we will see some procedures which provide the same result, which will be useful both in practical terms - they provide more efficient descriptions of the process - and in terms of understanding the coherence of the concepts of linear algebra. 
-First, the formal definition:
 
-Given a $p \times r$ matrix A and an $r \times s$ matrix B, the product C is a $p \times s$ matrix such that each element $c_{ij} \sum_{k=1}^{r} a_{ik}b{kj}$
+\paragraph{Definition: matrix multiplication}Given a $p \times r$ matrix $A$ and an $r \times s$ matrix B, the product $C$ is a $p \times s$ matrix such that each element $c_{ij}$ = $\sum_{k=1}^{r} a_{ik}b{kj}$
 
-That is, the element $c_{ij}$ is the sum of the pairwise products of the elements of the $i$th row of A by the $j$th column of B. Specifically, 
+That is, the element $c_{ij}$ is the sum of the pairwise products of the elements of the $i$th row of $A$ by the $j$th column of $B$. Specifically, 
 $c_{11} = a_{11} \times b_{11} + a_{12} \times b_{21} + \cdots a_{1r} \times b_{r1} $
 
-Notice that as a consequence of this definition, matrix multiplication is only defined for matrices A, B where the number of columns of A is equal to the number of rows in B. Another consequence of this definition is that matrix multiplication is not commutative, as you can see by defining two square matrices A and B, and evaluating the products AB and BA. 
+Notice that as a consequence of this definition, matrix multiplication is only defined for matrices $A$, $B$ where the number of columns of $A$ is equal to the number of rows in $B$. Equivalently, and perhaps more to the point, we require that the length of a row of$A$ be equal to the length of a column of $B$. 
+ Another consequence of this definition is that matrix multiplication is not commutative, as you can see by defining two square matrices $A$ and B, and evaluating the products $AB$ and $BA$. 
 
 \subsubsection{Matrix Multiplication Example}
 Let $A =
@@ -210,6 +239,13 @@ $
   a_{1m} & a_{2m} & \cdots & a_{nm}
  \end{pmatrix}
 $.
+
+\subsection{Inversion}
+Matrix inversion is distinct from matrix transposition. The inverse of an $m \times m$ matrix A is the matrix A' such that A multiplied by $A'$ produces the $m \times m$ identity matrix. From the definition of matrix multiplication it is obvious that a matrix which is not square can have no inverse, hence the specification A as an $m \times m$ matrix. 
+
+\paragraph{Note}: The octave math environment uses the right single-quote character as its transpose operator, despite its confusion resemblance to the standard "tick" used to indicate that an inversion has been performed. Inversions in octave are performed by named functions such as pinv() 
+
+ 
 \subsubsection{Matrix Equality}
 $p \times q$ matrix $A$ is equal to $r \times s$ matrix B iff 
 \begin{itemize}
@@ -218,5 +254,118 @@ $p \times q$ matrix $A$ is equal to $r \times s$ matrix B iff
 \end{itemize}
 
 \section{Vectors}
-To do. 
+\paragraph{definition: vector} An \textbf{n-vector} over some field F is a one-dimensional array of length n, whose elemements $a_1, a_2, ..., a_n$ are all in the field F. Generally, a \textbf{vector} is any n-vector.  
+Equivalently, we can define vectors in terms of matrices. An $m \times n$ matrix, when either m or n equals 1, is a vector. Specifically, an $m \times 1$ matrix can be considered as a \textbf{column vector}, and a $1 \times n$ matrix can be considered as a \textbf{row vector}.
+
+By convention, a vector is interpreted as a column vector unless we specify otherwise. That is, when we specify a vector on the page as $v_1, v_2, ..., v_n$, and we use the n subscript to indicate the final element, we mean this $m \times 1$ matrix: $
+ \begin{pmatrix}
+  v_{11} \\
+  v_{21} \\
+  \vdots \\
+  v_{m1} 
+ \end{pmatrix}
+$
+
+And when we want to mean particularly the $1 \times n$ row matrix, we will specify that we mean the transpose of $v$, $v^T$: $
+ \begin{pmatrix}
+  v_{11} &  v_{12} & \cdots & v_{1m} 
+ \end{pmatrix}
+$
+
+However, many authors do not trouble themselves very much with these details, and assume that the reader will make the necessary adjustments as they go along. 
+
+
+There are some subtle complications to be found in the treatment of vectors, but they are critical to the business of linear algebra, so it's worth taking some time to make sure we understand this part. 
+
+We will start by defining the operations on the vectors. 
+
+\subsection{Vector Operations}
+\paragraph{definition:vector addition} Given two n-vectors $U$ and $V$ over some field F, the sum $u + v$ is the n-vector $u_1+v_1, u_2+v_2, ... u_n+v_n$. 
+
+Vector addition is not defined for vectors of differing length. 
+
+\paragraph{definition:scalar-vector multiplication} Given an n-vector $U$ over some field F and a scalar $\alpha$ in F, the product  $\alpha \times u$ is the n-vector $\alpha u_1, \alpha u_2, ...\alpha u_n$. 
+
+Notice that these definitions are really repetitions of the definitions already given in terms of matrices. As we expect, scalar-vector multiplication distributes over vector addition: $\alpha (u +v) = \alpha u + \alpha v$. 
+
+\paragraph{defintion: scalar product} Given two vectors $u$ and $v$ of length $n$, the scalar product $u \cdot v$ is the sum $\sum_{i=1}^{n}u_iv_i$. 
+
+Notice that the result is a scalar and not a vector. The dot product is not defined for matrices, though some math packages such as matlab and octave will attempt to produce a result for the dot product of matrices if pressed. Notice also that the symbols $\cdot$ and $\times$ are used with very different meanings in linear algebra. This is in contrast to arithetic on scalars, where there is only one sort of multiplication to deal with. 
+
+\paragraph{definition:linear combination} Given some collection of vectors $vecs = v_1, v_2, ..., v_n$ over some field F, a \textbf{linear combination} is defined as the sum of the scalar-vector products $\alpha_1vecs_1 + \alpha_2vecs_2 + ... + \alpha_nvecs_n$, where $\alpha_1, \alpha_2, ..., \alpha_n$ are arbitrary numbers in F. Or, to use the sigma notation, $\sum_{k=1}^{n} \alpha_{i}vecs_{i}$
+
+
+\subsection{Vectors and Matrices}
+In this section we will look at some consequences of the definitions already introduced and develop some synonymous definitions for operations we already have in hand, and some particular definitions for some interesting (that is, useful) special cases. 
+
+\paragraph{Multiplication of matrices and vectors} Recall that vectors are a special case of matrices, and we can multiply them by the same rules we apply to matrices. For example, we can multiply a $2 \times 3$ matrix by a $3 \times 1$ column vector to produce a $2 \times 1$ column vector, and we can multiply a $1 \times 4$ row vector by a $4 \times 3$ matrix to produce a $1 \times 3$  row vector. Recall that by default, we treat a vector as a column vector, and thus when multiplying from the left, we should specify that we are multiplying the transposed vector by the matrix. However, many authors assume that the reader will perform this transposition, and simply write $vA$ when $v^TA$ would be expected.
+
+\paragraph{Matrix multiplication by linear combination} Consider the matrix  $A=\begin{pmatrix}
+  1 & 2 & 3 \\ 4 & 5 & 6
+ \end{pmatrix}
+$ 
+and the vector  $ v=\begin{pmatrix}
+  2 \\ 1 \\3 
+ \end{pmatrix}
+$ 
+
+We already know how to get the product $C = Av$ by applying the summation given in section () and repeated here:
+
+$c_{ij}$ = $\sum_{k=1}^{r} a_{ik}b{kj}$
+
+Now if you recall the formula for the linear combination 
+
+$\sum_{k=1}^{n} \alpha_{i}vecs_{i}$
+
+it should be clear that we are performing a linear combination of the rows of $A$, using the elements of $v$ as the scalars $\alpha_i$. That is, we are considering $A$ as a set of two row vectors, and combining them using the elements of the vector $v$ as coefficients to produce $ C_1=\begin{pmatrix}
+  2\times 1 + 1\times 2 + 3\times 3 \\ 2 \times 3 + 1 \times 5 + 3 \times 6  
+ \end{pmatrix}
+=\begin{pmatrix}
+13 \\31  
+ \end{pmatrix}
+$ 
+
+We can generalize this to matrix multiplication. One way to consider the multiplication $C = AB$ is "each column $c_{j}$ of $C$ is the linear combination of the row vectors of $A$ with the column vector $B_j$". So, if we let $ B=\begin{pmatrix}
+  2 & 6\\ 1 & 5 \\3  &4 
+ \end{pmatrix}
+$  we can decompose this matrix into two column vectors $B_1$ and $B_2$ and then compute the  linear combinations of A and $B_1$ and $A$ and $B_2$, which get us $ C_1=\begin{pmatrix}
+  13 \\ 31 
+ \end{pmatrix}
+$  and $ C_2=\begin{pmatrix}
+  28 \\73 
+ \end{pmatrix}
+$. Checking our work against our previous approach, or using octave, we find that this produces the correct product matrix $C$. 
+
+The same reasoning can be used in reverse to consider the each row $C_i$ of the product matrix $C$ as the linear combinations of the column vectors of $B$ with the row vector $A_i$ of A. 
+
+\paragraph{Matrix multiplication by scalar products} Consider again the matrix  $A=\begin{pmatrix}
+  1 & 2 & 3 \\ 4 & 5 & 6
+ \end{pmatrix}
+$ 
+and the vector  $ v=\begin{pmatrix}
+  2 \\ 1 \\3 
+ \end{pmatrix}
+$ already mentioned. We again want to find the product Av. And we again go back to our original definition by the summation 
+
+$c_{ij}$ = $\sum_{k=1}^{r} a_{ik}b{kj}$
+
+So particularly considering element $c_{11}$, which we calculate as $a_{11} \times v_{11} + a_{12} \times v_{21} + a_{13} \times v_31$, we can see that this is exactly the scalar product of the row vector $A_1$ and the column vector $v$. The same holds for the second element of $C$, and again this result is general: 
+$c_{ij}$ = $A_i \cdot B_j$. 
+
+\section{Linear Equations}
+
+\emph{This section will fall off the bottom of this document and be taken up in linealg\_2}
+
+Now that we have introduced matrices and vectors, we will look more closely at the linear equations. 
+
+Recall that a linear equation is an equation of the form 
+
+
+\subsection{Some More Useful Concepts}
+The following definitions are not immediately needed, but will come into play at some stage, so I'm including them here. 
+\paragraph{Definition} Homogeneous Linear Equation
+An equation of the form \\
+$a_1x_1 + a_2x_2 + \cdots + a_nx_n = 0$\\
+is called a homogeneous linear equation. 
+
 \end{document}
