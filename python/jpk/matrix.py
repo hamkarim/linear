@@ -45,6 +45,41 @@ class Matrix:
     def __repr__(self):
         '''Just emit the rows for a representation.'''
         return "\n".join(["\t".join([str(i) for i in row]) for row in self.rows()])
+    def additively_conformable(self, m2):
+        '''Returns True iff m1 + m2 is a legitimate operation'''
+        return self.n == m2.n and self.m == m2.m
+    def multi_conformable (self, m2):
+        '''Returns True iff m1 * m2 is a legitimate operation'''
+        return self.n == m2.m
+    
+
+    ####  dunder methods ###
+    def __add__(self, m2):
+        return add(self, m2)
+
+    def __sub__(self, m2):
+        return add(self, -m2);
+
+    def __neg__(self):
+        return Matrix(self.m, self.n, [-v for v in self.vals])
+    def __rmul__(self, alpha):
+        # hope alpha is a scalar
+        # something more effective than hope is wanted here
+
+        return scalar_mult(self, alpha)
+
+    def __eq__(self, other):
+        '''Matrices are equal iff their dimensions are the same and all of
+        their elements are equal'''
+        return all ([self.m == other.m, 
+                     self.n == other.n,  
+                     all(v1 == v2 for (v1, v2) in zip (self.vals, other.vals))])
+
+    def __getitem__(self, xy):
+        x,y = xy
+        return self.elem(x, y)
+
+        
 
 def mat_from_grid(grid):
     grid = grid.split("\n")
@@ -55,4 +90,22 @@ def mat_from_grid(grid):
     for row in grid:
         vals.extend([int (i) for i in row])
     return Matrix(m,n,vals)
+
+def add(m1, m2):
+    '''Return the result of adding m1 and m2. Throw an exception if the matrices are not 
+    additively conformable.'''
+    if not m1.additively_conformable(m2):
+        print "I'd better throw an exception here"
+        return None
+    return Matrix(m1.m, m1.n, [v1+v2 for (v1, v2) in zip(m1.vals, m2.vals)])
+
+def scalar_mult(m1, alpha):
+    return Matrix(m1.m, m1.n, [v * alpha for v in m1.vals])
+
+
+
+m1 = mat_from_grid("1 2")
+m2 = mat_from_grid("3\n4")
+
+
 
