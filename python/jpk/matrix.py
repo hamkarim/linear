@@ -1,9 +1,13 @@
 class Matrix:
-    '''A matrix, with standard operations'''
+    '''A matrix, with standard operations
+    We use logical AND and OR to represent elementwise multiplication and addition (.* and .+) 
+    since we need operators for these, and those make sense'''
     def __init__(self, m,n, vals):
         self.vals = vals
         self.n = n
         self.m = m
+        self.transposed = False
+
     def row(self, y):
         '''Retrieve a row of the matrix. Currently returned as a simple list. Should be a Vector.'''
         return self.vals[self.n*y: self.n*(y+1)]
@@ -53,20 +57,43 @@ class Matrix:
         return self.n == m2.m
     
 
+
+
+
     ####  dunder methods ###
     def __add__(self, m2):
         return add(self, m2)
 
     def __sub__(self, m2):
+        '''Defined as self + negated m2. In case you're using a weird 
+        field where p -q != p + -q. In which case, why?'''
         return add(self, -m2);
 
     def __neg__(self):
+        '''Negate all elements in the matrix'''
         return Matrix(self.m, self.n, [-v for v in self.vals])
+
     def __rmul__(self, alpha):
         # hope alpha is a scalar
         # something more effective than hope is wanted here
-
         return scalar_mult(self, alpha)
+
+    def __pow__(self, x):
+        '''Not implemented yet'''
+        return None
+
+    def __or__(self, other):
+        
+        if not self.additively_conformable( other):
+            return None
+        return [v1 + v2 for (v1, v2) in zip(self.vals, other.vals)]
+    def __and__(self, other):
+        '''We use & for element-wise multiplication, since we don't have a 
+        way to use .* and logical and makes sense in at least one case. (consider 
+        filtering against a binary matrix)'''
+        if not self.additively_conformable( other):
+            return None
+        return [v1 * v2 for (v1, v2) in zip(self.vals, other.vals)]
 
     def __eq__(self, other):
         '''Matrices are equal iff their dimensions are the same and all of
@@ -102,7 +129,30 @@ def add(m1, m2):
 def scalar_mult(m1, alpha):
     return Matrix(m1.m, m1.n, [v * alpha for v in m1.vals])
 
+    
+        ### Special Matrices ###
+def zero(x = 1, y = None):
+    '''returns a zero matrix of dimensions x, y. Assumes square matrix if y not specified.'''
+    if y == None:
+        y = x
+    return Matrix(x,y, x* y * [0])
 
+def ones(x = 1, y =None):
+    '''returns an xy Matrix whose elements are all equal to 1'''
+    if y == None:
+        y = x
+    return Matrix(x,y, x*y*[1])
+
+def identity(x = 1, y = None):
+    '''Returns the identity matrix of size x,y. If no y specified, assumes a 
+    square matrix is desired'''
+    if y == None:
+        y = x
+    m = zero(x,y)
+    for i in range(min(x,y)):
+        m.set(i,i, 1)
+    return m
+        
 
 m1 = mat_from_grid("1 2")
 m2 = mat_from_grid("3\n4")
