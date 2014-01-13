@@ -95,6 +95,10 @@ class Matrix:
                 mat.set(i,j, sum([u * v for (u,v) in zip(self.row(i), other.col(j))]))
         return mat
 
+    def transpose(self):
+        '''Returns this grid, transposed on its major diagonal'''
+        return mat_from_grid("\n".join([" ".join([str(i) for i in col]) for col in self.cols()]))
+
 
     ####  dunder methods ###
     def __repr__(self):
