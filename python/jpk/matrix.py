@@ -31,8 +31,7 @@ class Matrix:
             self.vals[j*self.n +x] = col[j]
 
     def elem(self,row,col):
-        '''Get a single element by index'''
-        
+        '''Get a single element by index'''        
         return self.vals[row*self.m +col]
 
     def set(self,x,y, value):
@@ -84,6 +83,19 @@ class Matrix:
         return all ([v == 0 for v in vals])
 
 
+    ### Standard matrix operations ###
+    def matrix_multiply(self, other):
+        '''Multiply this matrix by other. Naive algorithm to start with. 
+        '''
+        if not self.multi_conformable(other):
+            return None
+        mat = zero(self.m, other.n)
+        for i in range(mat.m):
+            for j in range(mat.n):
+                mat.set(i,j, sum([u * v for (u,v) in zip(self.row(i), other.col(j))]))
+        return mat
+
+
     ####  dunder methods ###
     def __repr__(self):
         '''Just emit the rows for a representation.'''
@@ -101,6 +113,9 @@ class Matrix:
     def __neg__(self):
         '''Negate all elements in the matrix'''
         return Matrix(self.m, self.n, [-v for v in self.vals])
+
+    def __mul__(self, other):
+        return self.matrix_multiply(other)
 
     def __rmul__(self, alpha):
         # hope alpha is a scalar
