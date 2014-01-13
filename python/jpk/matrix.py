@@ -29,9 +29,12 @@ class Matrix:
         To do: dimension checking, accept vectors instead of lists.'''
         for j in range(self.m):
             self.vals[j*self.n +x] = col[j]
-    def elem(self,x,y):
+
+    def elem(self,row,col):
         '''Get a single element by index'''
-        return self.vals[y*self.n +x]
+        
+        return self.vals[row*self.m +col]
+
     def set(self,x,y, value):
         '''Set a single element at (x,y) to a value. 
         To do: dimension checking'''
@@ -46,9 +49,6 @@ class Matrix:
         self.n +=1
         for i in range(self.m):
             self.vals.insert(i*self.n + j, new_col[i])
-    def __repr__(self):
-        '''Just emit the rows for a representation.'''
-        return "\n".join(["\t".join([str(i) for i in row]) for row in self.rows()])
     def additively_conformable(self, m2):
         '''Returns True iff m1 + m2 is a legitimate operation'''
         return self.n == m2.n and self.m == m2.m
@@ -56,11 +56,40 @@ class Matrix:
         '''Returns True iff m1 * m2 is a legitimate operation'''
         return self.n == m2.m
     
+    ### Propositions ###
 
+    def triangular(self):
+        ''' Returns true if this matrix is either upper- or lower-
+        triangular'''
+        return self.upper_triangular() or self.lower_triangular()
 
+    def upper_triangular(self, strict = False):
+        '''Returns true if all non-zero elements in this matrix are on
+        or above the major diagonal. If "strict" is True, returns True if matrix is
+        strictly upper: all non-zero elements are strictly above the diagonal'''
+        if strict:
+            vals = [val for (key, val) in enumerate(self.vals) if key % self.n <= key / self.m] 
+        else:
+            vals = [val for (key, val) in enumerate(self.vals) if key % self.n < key / self.m] 
+        return all ([v == 0 for v in vals])
+                
+    def lower_triangular(self, strict = False):
+        '''Returns true if all non-zero elements in this matrix are on
+        or below the major diagonal. If "strict" is True, returns true if matrix is
+        strictly lower: all non-zero elements are strictly below the major diagonal.'''
+        if strict:
+            vals = [val for (key, val) in enumerate(self.vals) if key % self.n >= key / self.m] 
+        else:
+            vals = [val for (key, val) in enumerate(self.vals) if key % self.n > key / self.m] 
+        return all ([v == 0 for v in vals])
 
 
     ####  dunder methods ###
+    def __repr__(self):
+        '''Just emit the rows for a representation.'''
+        return "\n".join(["\t".join([str(i) for i in row]) for row in self.rows()])
+
+
     def __add__(self, m2):
         return add(self, m2)
 
@@ -109,6 +138,7 @@ class Matrix:
         
 
 def mat_from_grid(grid):
+    grid = grid.strip()
     grid = grid.split("\n")
     m = len(grid)
     grid = [row.split() for row in grid]
@@ -152,10 +182,22 @@ def identity(x = 1, y = None):
     for i in range(min(x,y)):
         m.set(i,i, 1)
     return m
-        
+
+
+def mirror(x = 1, y = None):
+    '''Returns a matrix with ones on the minor diagonal. 
+    This matrix reflects left-to-right or top-to-bottom, depending
+    on whether it is multiplied from the left or right.'''
+    if y== None:
+        y = x
+    m = zero(x,y)
+    for i in range(min(x,y-1)):
+        m.set(i, y-1, 1)
+    return m
 
 m1 = mat_from_grid("1 2")
 m2 = mat_from_grid("3\n4")
-
+m3 = mat_from_grid("0 1 1 1\n 0 0 1 1 \n 0 0 0 1\n 0 0 0 0");
+m4 = mat_from_grid("0 0 0 0\n 1 0 0 0 \n 1 1 0 0\n 1 1 1 0");
 
 
