@@ -1,0 +1,12 @@
+1;
+
+function rint = rand_int(limit)
+
+  rint = floor(rand(1,1) * limit);
+endfunction
+
+function mats = m_compatible_mats(num)
+  ms = cell(num:1)
+  compatible_dims = [rand_int(5)+1, rand_int(5)+1];
+
+endfunction
